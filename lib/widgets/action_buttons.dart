@@ -1,12 +1,19 @@
 import 'package:flow_time_2/bloc/timer_bloc.dart';
 import 'package:flow_time_2/widgets/circular_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ActionButtons extends StatelessWidget {
-  const ActionButtons({super.key});
+  final Animation animation;
+  final AnimationController animationController;
+  final Function radiansFromDegree;
+
+  const ActionButtons({
+    super.key,
+    required this.animation,
+    required this.animationController,
+    required this.radiansFromDegree,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +21,49 @@ class ActionButtons extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.runtimeType != current.runtimeType,
       builder: (context, state) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        return Stack(
           children: [
+            Transform.translate(
+              offset: Offset.fromDirection(
+                radiansFromDegree(0.0),
+                animation.value * 100,
+              ),
+              child: Transform.scale(
+                scale: animation.value,
+                child: SizedBox(
+                  height: 117,
+                  child: CircularButton(
+                    height: 50,
+                    width: 50,
+                    icon: const Icon(Icons.skip_next),
+                    // TODO add skip
+                    onTap: () {},
+                    onLongTap: () {},
+                  ),
+                ),
+              ),
+            ),
+            Transform.translate(
+              offset: Offset.fromDirection(
+                radiansFromDegree(180.0),
+                animation.value * 100,
+              ),
+              child: Transform.scale(
+                scale: animation.value,
+                child: SizedBox(
+                  height: 117,
+                  child: CircularButton(
+                    height: 50,
+                    width: 50,
+                    icon: const Icon(Icons.stop),
+                    onTap: () =>
+                        context.read<TimerBloc>().add(const TimerReset()),
+                    onLongTap: () {},
+                  ),
+                ),
+              ),
+            ),
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (state is TimerInitial) ...[
               CircularButton(
                 icon: const Icon(
@@ -26,7 +73,13 @@ class ActionButtons extends StatelessWidget {
                 onTap: () => context
                     .read<TimerBloc>()
                     .add(TimerStarted(duration: state.duration)),
-                onLongTap: () {},
+                onLongTap: () {
+                  if (animationController.isCompleted) {
+                    animationController.reverse();
+                  } else {
+                    animationController.forward();
+                  }
+                },
               )
             ],
             if (state is TimerRunInProgress) ...[
@@ -36,7 +89,13 @@ class ActionButtons extends StatelessWidget {
                   size: 60,
                 ),
                 onTap: () => context.read<TimerBloc>().add(const TimerPaused()),
-                onLongTap: () {},
+                onLongTap: () {
+                  if (animationController.isCompleted) {
+                    animationController.reverse();
+                  } else {
+                    animationController.forward();
+                  }
+                },
               )
             ],
             if (state is TimerRunPause) ...[
@@ -47,7 +106,13 @@ class ActionButtons extends StatelessWidget {
                 ),
                 onTap: () =>
                     context.read<TimerBloc>().add(const TimerResumed()),
-                onLongTap: () {},
+                onLongTap: () {
+                  if (animationController.isCompleted) {
+                    animationController.reverse();
+                  } else {
+                    animationController.forward();
+                  }
+                },
               )
             ],
             if (state is TimerRunComplete) ...[
@@ -57,7 +122,13 @@ class ActionButtons extends StatelessWidget {
                   size: 60,
                 ),
                 onTap: () => context.read<TimerBloc>().add(const TimerReset()),
-                onLongTap: () {},
+                onLongTap: () {
+                  if (animationController.isCompleted) {
+                    animationController.reverse();
+                  } else {
+                    animationController.forward();
+                  }
+                },
               )
             ],
           ],
