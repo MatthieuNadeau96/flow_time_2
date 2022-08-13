@@ -9,6 +9,7 @@ class TimerDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const int workDuration = 60;
+
     final int duration =
         context.select((TimerBloc bloc) => bloc.state.duration);
     final double durationValue =

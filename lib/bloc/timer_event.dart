@@ -20,8 +20,12 @@ class TimerResumed extends TimerEvent {
   const TimerResumed();
 }
 
-class TimerReset extends TimerEvent {
-  const TimerReset();
+class TimerStopped extends TimerEvent {
+  const TimerStopped();
+}
+
+class TimerSkipped extends TimerEvent {
+  const TimerSkipped();
 }
 
 class TimerTicked extends TimerEvent {

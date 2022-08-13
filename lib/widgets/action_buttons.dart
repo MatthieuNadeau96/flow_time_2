@@ -36,8 +36,8 @@ class ActionButtons extends StatelessWidget {
                     height: 50,
                     width: 50,
                     icon: const Icon(Icons.skip_next),
-                    // TODO add skip
-                    onTap: () {},
+                    onTap: () =>
+                        context.read<TimerBloc>().add(const TimerSkipped()),
                     onLongTap: () {},
                   ),
                 ),
@@ -57,7 +57,7 @@ class ActionButtons extends StatelessWidget {
                     width: 50,
                     icon: const Icon(Icons.stop),
                     onTap: () =>
-                        context.read<TimerBloc>().add(const TimerReset()),
+                        context.read<TimerBloc>().add(const TimerStopped()),
                     onLongTap: () {},
                   ),
                 ),
@@ -121,7 +121,8 @@ class ActionButtons extends StatelessWidget {
                   Icons.replay,
                   size: 60,
                 ),
-                onTap: () => context.read<TimerBloc>().add(const TimerReset()),
+                onTap: () =>
+                    context.read<TimerBloc>().add(const TimerStopped()),
                 onLongTap: () {
                   if (animationController.isCompleted) {
                     animationController.reverse();
