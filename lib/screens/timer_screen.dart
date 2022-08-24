@@ -68,17 +68,20 @@ class TimerView extends StatelessWidget {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 100),
-                child: Center(child: TimerDisplay()),
-              ),
+              const SizedBox(height: 30),
+              const TimerDisplay(),
               ActionButtons(
                 animationController: animationController,
                 animation: animation,
                 radiansFromDegree: radiansFromDegree,
-              )
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.settings),
+                iconSize: 30,
+              ),
             ],
           )
         ],
