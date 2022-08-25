@@ -78,7 +78,9 @@ class TimerView extends StatelessWidget {
                 radiansFromDegree: radiansFromDegree,
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/settings');
+                },
                 icon: const Icon(Icons.settings),
                 iconSize: 30,
               ),

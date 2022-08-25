@@ -1,3 +1,4 @@
+import 'package:flow_time_2/screens/settings_screen.dart';
 import 'package:flow_time_2/screens/timer_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -11,12 +12,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flow Time',
-      theme: ThemeData(
-        primaryColor: Colors.blue,
-        colorScheme: const ColorScheme.light(secondary: Colors.red),
-      ),
-      home: const TimerScreen(),
-    );
+        title: 'Flow Time',
+        theme: ThemeData(
+          primaryColor: Colors.blue,
+          colorScheme: const ColorScheme.light(secondary: Colors.red),
+        ),
+        // home: const TimerScreen(),
+        routes: {
+          '/': ((context) => const TimerScreen()),
+          '/settings': ((context) => const SettingsScreen()),
+        });
   }
 }
