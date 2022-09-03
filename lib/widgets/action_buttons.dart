@@ -1,4 +1,4 @@
-import 'package:flow_time_2/bloc/timer_bloc.dart';
+import 'package:flow_time_2/bloc/timer/timer_bloc.dart';
 import 'package:flow_time_2/widgets/circular_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
