@@ -37,60 +37,155 @@ class SettingsScreen extends StatelessWidget {
         child: Center(
           child: ListView(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Dark Mode'),
-                  StreamBuilder<Brightness>(
-                    stream: bloc.brightness,
-                    builder: (context, snapshot) {
-                      return Switch(
-                        value:
-                            (snapshot.data == Brightness.light) ? false : true,
-                        onChanged: (bool val) {
-                          if (val) {
-                            bloc.changeBrightness(Brightness.dark);
-                          } else {
-                            bloc.changeBrightness(Brightness.light);
-                          }
-                        },
-                      );
-                    },
-                  )
-                ],
+              SettingRow(
+                name: 'Flow Duration',
+                builder: StreamBuilder<Brightness>(
+                  stream: bloc.brightness,
+                  builder: (context, snapshot) {
+                    return Text('30 min');
+                  },
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Primary Color'),
-                  StreamBuilder<ColorModel>(
-                      stream: bloc.primaryColor,
-                      builder: (context, snapshot) {
-                        return Slider(
-                          value: snapshot.data?.index != null
-                              ? snapshot.data!.index
-                              : 0.0,
-                          min: 0.0,
-                          max: 3.0,
-                          divisions: 3,
-                          label: snapshot.data?.name != null
-                              ? snapshot.data!.name
-                              : "color",
-                          onChanged: (double val) {
-                            (val != null)
-                                ? bloc.changePrimaryColor(
-                                    bloc.indexToPrimaryColor(val),
-                                  )
-                                : null;
-                          },
+              SettingRow(
+                name: 'Break Duration',
+                builder: StreamBuilder<Brightness>(
+                  stream: bloc.brightness,
+                  builder: (context, snapshot) {
+                    return Text('5 min');
+                  },
+                ),
+              ),
+              // SettingRow(
+              //   name: 'Notifications',
+              //   builder: StreamBuilder<Brightness>(
+              //     stream: bloc.brightness,
+              //     builder: (context, snapshot) {
+              //       return Switch(
+              //         value: (snapshot.data == Brightness.light) ? false : true,
+              //         onChanged: (bool val) {
+              //           if (val) {
+              //             bloc.changeBrightness(Brightness.dark);
+              //           } else {
+              //             bloc.changeBrightness(Brightness.light);
+              //           }
+              //         },
+              //       );
+              //     },
+              //   ),
+              // ),
+              // SettingRow(
+              //   name: 'Sound',
+              //   builder: StreamBuilder<Brightness>(
+              //     stream: bloc.brightness,
+              //     builder: (context, snapshot) {
+              //       return Switch(
+              //         value: (snapshot.data == Brightness.light) ? false : true,
+              //         onChanged: (bool val) {
+              //           if (val) {
+              //             bloc.changeBrightness(Brightness.dark);
+              //           } else {
+              //             bloc.changeBrightness(Brightness.light);
+              //           }
+              //         },
+              //       );
+              //     },
+              //   ),
+              // ),
+              // SettingRow(
+              //   name: 'Coffee Timer',
+              //   builder: StreamBuilder<Brightness>(
+              //     stream: bloc.brightness,
+              //     builder: (context, snapshot) {
+              //       return Switch(
+              //         value: (snapshot.data == Brightness.light) ? false : true,
+              //         onChanged: (bool val) {
+              //           if (val) {
+              //             bloc.changeBrightness(Brightness.dark);
+              //           } else {
+              //             bloc.changeBrightness(Brightness.light);
+              //           }
+              //         },
+              //       );
+              //     },
+              //   ),
+              // ),
+              SettingRow(
+                name: 'Dark Theme',
+                builder: StreamBuilder<Brightness>(
+                  stream: bloc.brightness,
+                  builder: (context, snapshot) {
+                    return Switch(
+                      value: (snapshot.data == Brightness.light) ? false : true,
+                      onChanged: (bool val) {
+                        if (val) {
+                          bloc.changeBrightness(Brightness.dark);
+                        } else {
+                          bloc.changeBrightness(Brightness.light);
+                        }
+                      },
+                    );
+                  },
+                ),
+              ),
+              SettingRow(
+                name: 'Primary Color',
+                builder: StreamBuilder<ColorModel>(
+                  stream: bloc.primaryColor,
+                  builder: (context, snapshot) {
+                    return Slider(
+                      value: snapshot.data?.index != null
+                          ? snapshot.data!.index
+                          : 0.0,
+                      min: 0.0,
+                      max: 3.0,
+                      divisions: 3,
+                      label: snapshot.data?.name != null
+                          ? snapshot.data!.name
+                          : "color",
+                      onChanged: (double val) {
+                        bloc.changePrimaryColor(
+                          bloc.indexToPrimaryColor(val),
                         );
-                      })
-                ],
+                      },
+                    );
+                  },
+                ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class SettingRow extends StatelessWidget {
+  final String name;
+  final Widget builder;
+  const SettingRow({
+    super.key,
+    required this.name,
+    required this.builder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15.0),
+              child: Text(name),
+            ),
+            builder,
+          ],
+        ),
+        const Divider(
+          height: 15,
+        ),
+      ],
     );
   }
 }

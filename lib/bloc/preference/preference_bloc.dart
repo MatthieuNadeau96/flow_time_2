@@ -4,6 +4,9 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceBloc {
+  // TODO: finish implementing durations
+  final _flowDuration = BehaviorSubject<int>();
+  final _breakDuration = BehaviorSubject<int>();
   final _brightness = BehaviorSubject<Brightness>();
   final _primaryColor = BehaviorSubject<ColorModel>();
   final _colors = [
