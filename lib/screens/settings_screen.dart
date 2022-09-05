@@ -25,6 +25,7 @@ class SettingsScreen extends StatelessWidget {
           ),
         ),
         leading: GestureDetector(
+          behavior: HitTestBehavior.translucent,
           child: const Icon(CupertinoIcons.back),
           onTap: () {
             bloc.savePreferences();
