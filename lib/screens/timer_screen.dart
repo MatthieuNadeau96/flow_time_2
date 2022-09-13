@@ -18,15 +18,20 @@ class _TimerScreenState extends State<TimerScreen>
   void initState() {
     super.initState();
     animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 250));
-    degOneTranslationAnimation =
-        Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeOut,
-    ));
-    animationController.addListener(() {
-      setState(() {});
-    });
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+    degOneTranslationAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Curves.easeOut,
+      ),
+    );
+    animationController.addListener(
+      () {
+        setState(() {});
+      },
+    );
   }
 
   late AnimationController animationController;

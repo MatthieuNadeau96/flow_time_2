@@ -11,6 +11,8 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   final Ticker _ticker;
   bool isBreak = false;
   static int _duration = 60;
+  final int workDuration = 60;
+  final int breakDuration = 30;
 
   StreamSubscription<int>? _tickerSubscription;
 
@@ -23,6 +25,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     on<TimerStopped>(_onStopped);
     on<TimerSkipped>(_onSkipped);
     on<TimerTicked>(_onTicked);
+    on<TimerComplete>(_onComplete);
   }
 
   @override
@@ -32,11 +35,11 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   void _onStarted(TimerStarted event, Emitter<TimerState> emit) {
-    _duration = isBreak ? 30 : 60;
-    emit(TimerRunInProgress(event.duration));
+    checkDuration();
+    emit(TimerRunInProgress(_duration));
     _tickerSubscription?.cancel();
     _tickerSubscription = _ticker
-        .tick(ticks: event.duration)
+        .tick(ticks: _duration)
         .listen((duration) => add(TimerTicked(duration: duration)));
   }
 
@@ -55,9 +58,11 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   void _onStopped(TimerStopped event, Emitter<TimerState> emit) {
-    _duration = isBreak ? 30 : 60;
-    _tickerSubscription?.cancel();
-    emit(TimerInitial(_duration));
+    if (state is TimerRunInProgress) {
+      checkDuration();
+      _tickerSubscription?.cancel();
+      emit(TimerInitial(_duration));
+    }
   }
 
   void _onSkipped(TimerSkipped event, Emitter<TimerState> emit) {
@@ -65,14 +70,24 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
     isBreak = !isBreak;
 
-    _duration = isBreak ? 30 : 60;
+    checkDuration();
+
     emit(TimerInitial(_duration));
   }
 
   void _onTicked(TimerTicked event, Emitter<TimerState> emit) {
-    _duration = isBreak ? 30 : 60;
+    checkDuration();
     emit(event.duration > 0
         ? TimerRunInProgress(event.duration)
         : const TimerRunComplete());
+  }
+
+  void _onComplete(TimerComplete event, Emitter<TimerState> emit) {
+    isBreak = !isBreak;
+    // TODO
+  }
+
+  int checkDuration() {
+    return _duration = isBreak ? breakDuration : workDuration;
   }
 }
