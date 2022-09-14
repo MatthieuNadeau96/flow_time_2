@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:flow_time_2/models/color.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceBloc {
-  // TODO: finish implementing durations
   final _flowDuration = BehaviorSubject<int>();
   final _breakDuration = BehaviorSubject<int>();
   final _brightness = BehaviorSubject<Brightness>();
@@ -17,10 +18,14 @@ class PreferenceBloc {
   ];
 
   // Getters
+  Stream<int> get flowDuration => _flowDuration.stream;
+  Stream<int> get breakDuration => _breakDuration.stream;
   Stream<Brightness> get brightness => _brightness.stream;
   Stream<ColorModel> get primaryColor => _primaryColor.stream;
 
   // Setters
+  Function(int) get changeFlowDuration => _flowDuration.sink.add;
+  Function(int) get changeBreakDuration => _breakDuration.sink.add;
   Function(Brightness) get changeBrightness => _brightness.sink.add;
   Function(ColorModel) get changePrimaryColor => _primaryColor.sink.add;
 
@@ -30,6 +35,9 @@ class PreferenceBloc {
 
   savePreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('flowDuration', _flowDuration.value);
+    await prefs.setInt('breakDuration', _breakDuration.value);
+
     if (_brightness.value == Brightness.light) {
       await prefs.setBool('dark', false);
     } else {
@@ -43,6 +51,15 @@ class PreferenceBloc {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? darkMode = prefs.getBool('dark');
     double? colorIndex = prefs.getDouble('colorIndex');
+    int? flowDuration = prefs.getInt('flowDuration');
+    int? breakDuration = prefs.getInt('breakDuration');
+
+    if (flowDuration != null) {
+      changeFlowDuration(flowDuration);
+    }
+    if (breakDuration != null) {
+      changeBreakDuration(breakDuration);
+    }
 
     if (darkMode != null) {
       (darkMode == false)
@@ -62,6 +79,8 @@ class PreferenceBloc {
   }
 
   dispose() {
+    _flowDuration.close();
+    _breakDuration.close();
     _primaryColor.close();
     _brightness.close();
   }
