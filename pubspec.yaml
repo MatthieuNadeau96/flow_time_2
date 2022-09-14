@@ -16,6 +16,7 @@ dependencies:
   rxdart: ^0.27.5
   shared_preferences: ^2.0.15
   provider: ^6.0.3
+  numberpicker: ^2.1.1
 
 dev_dependencies:
   flutter_test:
