@@ -10,15 +10,18 @@ part 'timer_state.dart';
 class TimerBloc extends Bloc<TimerEvent, TimerState> {
   final Ticker _ticker;
   bool isBreak = false;
-  static int _duration = 10;
-  final int workDuration = 10;
-  final int breakDuration = 5;
+
+  static int _duration = (10 * 60);
+  int flowDuration = (60 * 60);
+  int breakDuration = (10 * 60);
 
   StreamSubscription<int>? _tickerSubscription;
 
   TimerBloc({required Ticker ticker})
       : _ticker = ticker,
-        super(TimerInitial(_duration)) {
+        super(TimerInitial(
+          _duration,
+        )) {
     on<TimerStarted>(_onStarted);
     on<TimerPaused>(_onPaused);
     on<TimerResumed>(_onResumed);
@@ -82,7 +85,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   void _onComplete(TimerComplete event, Emitter<TimerState> emit) {
     print('END');
-    isBreak ? print('TIME TO WORK') : print('TIME FOR A BREAK');
+    isBreak ? print('TIME TO FLOW') : print('TIME FOR A BREAK');
     _tickerSubscription?.cancel();
     isBreak = !isBreak;
     // TODO Sound the alarm
@@ -93,6 +96,6 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   int checkDuration() {
-    return _duration = isBreak ? breakDuration : workDuration;
+    return _duration = isBreak ? breakDuration : flowDuration;
   }
 }

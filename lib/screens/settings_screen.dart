@@ -2,6 +2,7 @@ import 'package:flow_time_2/models/color.dart';
 import 'package:flow_time_2/provider/preference_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -40,19 +41,35 @@ class SettingsScreen extends StatelessWidget {
             children: [
               SettingRow(
                 name: 'Flow Duration',
-                builder: StreamBuilder<Brightness>(
-                  stream: bloc.brightness,
+                builder: StreamBuilder<int>(
+                  stream: bloc.flowDuration,
                   builder: (context, snapshot) {
-                    return Text('30 min');
+                    return TextButton(
+                      onPressed: () => _dialogBuilder(
+                        context,
+                        snapshot,
+                        bloc,
+                        'Flow',
+                      ),
+                      child: Text("${snapshot.data ?? 60} min"),
+                    );
                   },
                 ),
               ),
               SettingRow(
                 name: 'Break Duration',
-                builder: StreamBuilder<Brightness>(
-                  stream: bloc.brightness,
+                builder: StreamBuilder<int>(
+                  stream: bloc.breakDuration,
                   builder: (context, snapshot) {
-                    return Text('5 min');
+                    return TextButton(
+                      onPressed: () => _dialogBuilder(
+                        context,
+                        snapshot,
+                        bloc,
+                        'Break',
+                      ),
+                      child: Text("${snapshot.data ?? 10} min"),
+                    );
                   },
                 ),
               ),
@@ -189,4 +206,33 @@ class SettingRow extends StatelessWidget {
       ],
     );
   }
+}
+
+_dialogBuilder(BuildContext context, snapshot, bloc, String title) {
+  bool isFlow = title == 'Flow';
+  Stream<int> dataStream = isFlow ? bloc.flowDuration : bloc.breakDuration;
+  return showDialog(
+    context: context,
+    builder: ((context) {
+      return AlertDialog(
+        title: Text('$title Duration'),
+        content: StreamBuilder<int>(
+          stream: dataStream,
+          builder: (context, snapshot) {
+            return NumberPicker(
+              itemCount: 5,
+              minValue: 1,
+              maxValue: 120,
+              value: snapshot.data ?? 1,
+              onChanged: ((newVal) {
+                isFlow
+                    ? bloc.changeFlowDuration(newVal)
+                    : bloc.changeBreakDuration(newVal);
+              }),
+            );
+          },
+        ),
+      );
+    }),
+  );
 }
