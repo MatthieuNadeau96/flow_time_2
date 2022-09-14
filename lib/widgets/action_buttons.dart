@@ -21,6 +21,11 @@ class ActionButtons extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.runtimeType != current.runtimeType,
       builder: (context, state) {
+        final blocState = context.watch<TimerBloc>().state;
+        print('blocState -> $blocState');
+        if (blocState.duration == 0) {
+          context.read<TimerBloc>().add(const TimerComplete());
+        }
         return Stack(
           children: [
             Transform.translate(
@@ -106,23 +111,6 @@ class ActionButtons extends StatelessWidget {
                 ),
                 onTap: () =>
                     context.read<TimerBloc>().add(const TimerResumed()),
-                onLongTap: () {
-                  if (animationController.isCompleted) {
-                    animationController.reverse();
-                  } else {
-                    animationController.forward();
-                  }
-                },
-              )
-            ],
-            if (state is TimerRunComplete) ...[
-              CircularButton(
-                icon: const Icon(
-                  Icons.replay,
-                  size: 60,
-                ),
-                onTap: () =>
-                    context.read<TimerBloc>().add(const TimerStopped()),
                 onLongTap: () {
                   if (animationController.isCompleted) {
                     animationController.reverse();
