@@ -11,9 +11,10 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   final Ticker _ticker;
   bool isBreak = false;
 
-  static int _duration = (10 * 60);
-  int flowDuration = (60 * 60);
-  int breakDuration = (10 * 60);
+  static int _duration = (55);
+  int newDuration = _duration;
+  int flowDuration = (69);
+  int breakDuration = (420);
 
   StreamSubscription<int>? _tickerSubscription;
 
@@ -22,6 +23,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
         super(TimerInitial(
           _duration,
         )) {
+    on<TimerInitialized>(_onInitialized);
     on<TimerStarted>(_onStarted);
     on<TimerPaused>(_onPaused);
     on<TimerResumed>(_onResumed);
@@ -37,12 +39,19 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     return super.close();
   }
 
+  void _onInitialized(TimerInitialized event, Emitter<TimerState> emit) async {
+    checkDuration();
+    _tickerSubscription?.cancel();
+    print('the new duration IS!!!!!!! -. $newDuration');
+    emit(TimerReInitialized(newDuration));
+  }
+
   void _onStarted(TimerStarted event, Emitter<TimerState> emit) {
     checkDuration();
-    emit(TimerRunInProgress(_duration));
+    emit(TimerRunInProgress(newDuration));
     _tickerSubscription?.cancel();
     _tickerSubscription = _ticker
-        .tick(ticks: _duration)
+        .tick(ticks: newDuration)
         .listen((duration) => add(TimerTicked(duration: duration)));
   }
 
@@ -63,7 +72,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   void _onStopped(TimerStopped event, Emitter<TimerState> emit) {
     checkDuration();
     _tickerSubscription?.cancel();
-    emit(TimerInitial(_duration));
+    emit(TimerInitial(newDuration));
   }
 
   void _onSkipped(TimerSkipped event, Emitter<TimerState> emit) {
@@ -73,7 +82,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
     checkDuration();
 
-    emit(TimerInitial(_duration));
+    emit(TimerInitial(newDuration));
   }
 
   void _onTicked(TimerTicked event, Emitter<TimerState> emit) {
@@ -92,10 +101,10 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     // TODO Push notification
 
     checkDuration();
-    emit(TimerInitial(_duration));
+    emit(TimerInitial(newDuration));
   }
 
-  int checkDuration() {
-    return _duration = isBreak ? breakDuration : flowDuration;
+  Future<int> checkDuration() async {
+    return _duration = newDuration;
   }
 }

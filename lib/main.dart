@@ -24,7 +24,6 @@ class MyApp extends StatelessWidget {
                 return StreamBuilder<ColorModel>(
                     stream: provider.bloc.primaryColor,
                     builder: (context, snapshotColor) {
-                      print("->> ${snapshotColor.data?.color}");
                       return MaterialApp(
                         title: 'Flow Time',
                         theme: ThemeData(

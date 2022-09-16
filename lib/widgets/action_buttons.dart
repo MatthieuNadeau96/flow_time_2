@@ -23,6 +23,7 @@ class ActionButtons extends StatelessWidget {
       builder: (context, state) {
         final blocState = context.watch<TimerBloc>().state;
         print('blocState -> $blocState');
+        print('actionButtons state duration -> ${blocState.duration}');
         if (blocState.duration == 0) {
           context.read<TimerBloc>().add(const TimerComplete());
         }
