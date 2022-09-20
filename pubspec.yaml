@@ -17,6 +17,7 @@ dependencies:
   shared_preferences: ^2.0.15
   provider: ^6.0.3
   numberpicker: ^2.1.1
+  audioplayers: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -24,3 +25,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/audio/ding.mp3
+  #   - images/a_dot_ham.jpeg
